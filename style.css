@@ -1,0 +1,8 @@
+#todoList > p.finished {
+    color: #999;
+    text-decoration: line-through;
+}
+
+#todoList > p > button.delete{
+    margin-left: 20px;
+}
