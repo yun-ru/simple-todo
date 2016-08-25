@@ -9,7 +9,12 @@
 <h1 id="title"></h1>
 <input id="myInput" type="text">
 <button id="myBtn">Add Todo</button>
-<button id="filterFinish">Filter Finished!</button>
+<hr>
+<div>
+    <button id="filterFinish">Show Unfinished</button>
+    <button id="filterUnFinish">Show finished</button>
+    <button id="showAll">Show All</button>
+</div>
 <div id="todoList"></div>
 <script id="template" type="text/x-handlebars-template">
     {{#todos}}

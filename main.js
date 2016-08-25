@@ -1,6 +1,8 @@
 const ADD_TODO = "ADD_TODO";
 const REMOVE_TODO = "REMOVE_TODO";
 const FINISH_TODO = "FINISH_TODO";
+const FILTER_FINISH_TODO = "FILTER_FINISH_TODO";
+const FILTER_UNFINISH_TODO = "FILTER_UNFINISH_TODO";
 
 class Action {
     addTodo(todo) {
@@ -12,6 +14,13 @@ class Action {
     removeTodo(id) {
         return {type: REMOVE_TODO, id}
     }
+    filterFinish() {
+        return {type: FILTER_FINISH_TODO}
+    }
+    filterUnFinish() {
+        return {type: FILTER_UNFINISH_TODO}
+    }
+
 }
 
 class Store {
@@ -24,7 +33,8 @@ class Store {
                     title: "Have a good time",
                     finished: false
                 }
-            ]
+            ],
+            filterTodos: []
         }
     }
     dispatch(action) {
@@ -51,6 +61,16 @@ class Store {
                     Object.assign({},this.state,{todos:
                         this.state.todos.filter(todo=>todo.id!==action.id)
                     });
+            case FILTER_FINISH_TODO:
+                return this.state =
+                    Object.assign({},this.state,{filterTodos:
+                        this.state.todos.filter(todo=>!todo.finished)
+                    })
+            case FILTER_UNFINISH_TODO:
+                return this.state =
+                    Object.assign({},this.state,{filterTodos:
+                        this.state.todos.filter(todo=>todo.finished)
+                    })
 
             default:
                 return this.state;
@@ -74,6 +94,8 @@ class Main {
         this.$myBtn = $("#myBtn");
         this.template = $("#template").html();
         this.$filterFinish = $("#filterFinish");
+        this.$filterUnFinish = $("#filterUnFinish");
+        this.$showAll = $("#showAll");
     }
     eventBinding() {
         $(window).on("load",this.render.bind(this));
@@ -81,7 +103,9 @@ class Main {
         this.$myInput.on("keyup",e=>{e.keyCode===13 && this.handleSubmit()});
         this.$todoList.on("click","button.finish",e=>this.finishTodo(e));
         this.$todoList.on("click","button.delete",e=>this.removeTodo(e));
-        this.$filterFinish.on("click",this.showUnFinished.bind(this))
+        this.$filterFinish.on("click",this.filterFinish.bind(this));
+        this.$filterUnFinish.on("click",this.filterUnFinish.bind(this));
+        this.$showAll.on("click",this.render.bind(this))
 
     }
     removeTodo(e) {
@@ -94,10 +118,13 @@ class Main {
         store.dispatch(action.finishTodo(id));
         this.render();
     }
-    showUnFinished() {
-        this.filterTodos = $.extend(store.state.todos);
-        this.filterTodos = this.filterTodos.filter(todo=>!todo.finished);
-        this.filterRender();
+    filterFinish() {
+        store.dispatch(action.filterFinish());
+        this.$todoList.html(Handlebars.compile(this.template)({todos:store.state.filterTodos}));
+    }
+    filterUnFinish() {
+        store.dispatch(action.filterUnFinish());
+        this.$todoList.html(Handlebars.compile(this.template)({todos:store.state.filterTodos}));
     }
     handleSubmit() {
         const todo = this.$myInput.val();
@@ -108,11 +135,6 @@ class Main {
     render() {
         this.$title.text(store.state.title);
         this.$todoList.html(Handlebars.compile(this.template)({todos:store.state.todos}));
-    }
-    filterRender() {
-        this.$title.text(store.state.title);
-        this.$todoList.html(Handlebars.compile(this.template)({todos:this.filterTodos}));
-        console.log(this.filterTodos)
     }
 }
 
