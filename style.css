@@ -1,8 +1,8 @@
-#todoList > p.finished {
+#todoList > p.finished span{
     color: #999;
     text-decoration: line-through;
 }
 
-#todoList > p > button.delete{
-    margin-left: 20px;
+#todoList > p > button{
+    margin-left: 10px;
 }

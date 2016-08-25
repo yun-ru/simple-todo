@@ -12,7 +12,11 @@
 <div id="todoList"></div>
 <script id="template" type="text/x-handlebars-template">
     {{#todos}}
-    <p class="{{#if finished}}finished{{/if}}">{{title}} <button class="delete" data-id="{{id}}">{{#if finished}} undone {{else}} done! {{/if}}</button></p>
+    <p class="{{#if finished}}finished{{/if}}">
+        <span>{{title}}</span>
+        <button class="finish" data-id="{{id}}">{{#if finished}} undone {{else}} done! {{/if}}</button>
+        <button class="delete" data-id="{{id}}">remove</button>
+    </p>
     {{/todos}}
 </script>
 <script src="/bower_components/zepto/zepto.min.js"></script>
