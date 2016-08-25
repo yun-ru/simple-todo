@@ -73,7 +73,7 @@ class Main {
         this.$myInput = $("#myInput");
         this.$myBtn = $("#myBtn");
         this.template = $("#template").html();
-        
+        this.$filterFinish = $("#filterFinish");
     }
     eventBinding() {
         $(window).on("load",this.render.bind(this));
@@ -81,6 +81,7 @@ class Main {
         this.$myInput.on("keyup",e=>{e.keyCode===13 && this.handleSubmit()});
         this.$todoList.on("click","button.finish",e=>this.finishTodo(e));
         this.$todoList.on("click","button.delete",e=>this.removeTodo(e));
+        this.$filterFinish.on("click",this.showUnFinished.bind(this))
 
     }
     removeTodo(e) {
@@ -93,6 +94,11 @@ class Main {
         store.dispatch(action.finishTodo(id));
         this.render();
     }
+    showUnFinished() {
+        this.filterTodos = $.extend(store.state.todos);
+        this.filterTodos = this.filterTodos.filter(todo=>!todo.finished);
+        this.filterRender();
+    }
     handleSubmit() {
         const todo = this.$myInput.val();
         store.dispatch(action.addTodo(todo));
@@ -102,7 +108,11 @@ class Main {
     render() {
         this.$title.text(store.state.title);
         this.$todoList.html(Handlebars.compile(this.template)({todos:store.state.todos}));
-        console.log(store.state.todos)
+    }
+    filterRender() {
+        this.$title.text(store.state.title);
+        this.$todoList.html(Handlebars.compile(this.template)({todos:this.filterTodos}));
+        console.log(this.filterTodos)
     }
 }
 
